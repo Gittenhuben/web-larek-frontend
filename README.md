@@ -196,13 +196,13 @@ export interface IWebLarekAPI {
 - submitButton: HTMLButtonElement - Кнопка подтверждения
 - form: HTMLFormElement - элемент формы
 - formName: string - наименование формы
-- inputs: NodeListOf<HTMLInputElement> - коллекция всех полей ввода формы
-- errors: Record<string, HTMLElement> - объект хранящий все элементы для вывода ошибок с привязкой к атрибуту name инпутов
+- inputs: NodeListOf\<HTMLInputElement> - коллекция всех полей ввода формы
+- errors: Record\<string, HTMLElement> - объект хранящий все элементы для вывода ошибок с привязкой к атрибуту name инпутов
 
 Методы:
 - setValid(isValid: boolean): void - изменяет активность кнопки подтверждения
-- getInputValues(): Record<string, string> - возвращает объект с данными из полей формы, где ключ - name инпута, значение - данные введенные пользователем
-- setInputValues(data: Record<string, string>): void - принимает объект с данными для заполнения полей формы
+- getInputValues(): Record\<string, string> - возвращает объект с данными из полей формы, где ключ - name инпута, значение - данные введенные пользователем
+- setInputValues(data: Record\<string, string>): void - принимает объект с данными для заполнения полей формы
 - setError(data: { field: string, value: string, validInformation: string }): void - принимает объект с данными для отображения или сокрытия текстов ошибок
 - showInputError (errorMessage: string): void - отображает полученный текст ошибки
 - hideInputError (): void - очищает текст ошибки
@@ -235,8 +235,8 @@ export interface IWebLarekAPI {
 Отвечает за взаимодействие с бэкендом сервиса.
 
 Содержит следующие методы:
-- getItems(): Promise<TItem[]>; - загружает с сервера массив товаров
-- sendOrder(order: TOrder): Promise<TOrderResult>; - отправляет заказ на сервер и получает результат отправки
+- getItems(): Promise\<TItem[]>; - загружает с сервера массив товаров
+- sendOrder(order: TOrder): Promise\<TOrderResult>; - отправляет заказ на сервер и получает результат отправки
 
 ## Взаимодействие компонентов
 Код, описывающий взаимодействие представления и данных между собой, находится в файле `index.ts`, выполняющем роль презентера. Взаимодействие осуществляется за счет событий генерируемых с помощью брокера событий и обработчиков этих событий, описанных в `index.ts`. В `index.ts` сначала создаются экземпляры всех необходимых классов, а затем настраивается обработка событий.
