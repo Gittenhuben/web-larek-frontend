@@ -83,6 +83,9 @@ const config = {
         keep_fnames: true
       }
     })]
+  },
+  performance: {
+    maxAssetSize: 1024000
   }
 };
 
