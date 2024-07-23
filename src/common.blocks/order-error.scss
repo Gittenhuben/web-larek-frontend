@@ -1,0 +1,5 @@
+@use "mixins";
+
+.order-error::before {
+    @include mixins.background('../images/trash-3.svg');
+}

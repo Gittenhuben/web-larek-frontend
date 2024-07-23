@@ -14,5 +14,12 @@
   &__buttons {
     @include mixins.flex(row);
     gap: 1.5rem;
+    border: $defaultBorder;
+    border-radius: 0.75rem;
+    border-color: transparent;
+
+    &-invalid {
+      border-color: $error;
+    }
   }
 }

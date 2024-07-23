@@ -3,13 +3,16 @@
 
 .basket {
   @include mixins.flex(column);
-  gap: 2rem;
   height: 100%;
 
   &__list {
     padding: 0;
     margin: 0;
     flex-grow: 1;
+  }
+
+  &__price {
+    font-size: $mainFontSize;
   }
 
   &__item {
@@ -33,7 +36,6 @@
       @include mixins.icon(2rem, 'trash');
       @include mixins.link($hover, white);
       opacity: 0.5;
-      margin-left: 4rem;
     }
   }
 }

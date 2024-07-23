@@ -12,9 +12,16 @@
   &_full {
     flex-direction: row;
     background-color: transparent;
+    padding: $defaultPadding calc($defaultPadding / 2.4 * 7.9) $defaultPadding 0;
 
     .card__title {
       flex-grow: 0;
+      font-size: 3rem;
+    }
+
+    .card__image {
+      margin: 0 2.4rem 0 0;
+      height: 452px;
     }
   }
 
@@ -27,6 +34,12 @@
     .card__title {
       flex-grow: 1;
     }
+
+    .card__price {
+      min-width: 379px;
+      text-align: center;
+    }
+
   }
 
   &__column {
@@ -46,7 +59,7 @@
     margin: 3.75rem;
   }
   &__title {
-    font-size: $titleFontSize;
+    font-size: 3rem;
     font-weight: 500;
     margin: 0;
     flex-grow: 1;
@@ -54,6 +67,7 @@
   &__text {
     text-align: left;
     flex-grow: 1;
+    font-size: $mainFontSize;
   }
   &__category {
     padding: 0.5rem 1.25rem;
@@ -81,6 +95,6 @@
 
   }
   &__price {
-
+    font-size: $mainFontSize;
   }
 }

@@ -4,16 +4,25 @@
 .modal {
   @include mixins.sublayer;
   height: max-content;
-  position: absolute;
-  display: none;
+  position: fixed;
   justify-content: center;
   background-color: $overlayBackground;
   z-index: 100;
   padding-top: 5vh;
   padding-bottom: 5vh;
+  min-height: 90vmin;
+  display: flex;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s 0.6s, opacity 0.6s;
+  pointer-events: none;
 
   &_active {
     display: flex;
+    visibility: visible;
+    opacity: 1;
+    transition: visibility 0s, opacity 0.6s;
+    pointer-events: all;
   }
 
   &__container {
@@ -21,10 +30,11 @@
     @include mixins.flex(column);
     gap: $defaultPadding;
     background-color: $background;
-    min-height: 90vmin;
     border-radius: 3rem;
     box-sizing: border-box;
     position: relative;
+    margin: auto;
+    padding: calc($defaultPadding * 2) $defaultPadding;
   }
 
   &__content {
@@ -41,13 +51,14 @@
     @include mixins.flex(row);
     align-items: center;
     gap: 2rem;
+    padding-top: 4rem;
   }
 
   &__close {
     position: absolute;
-    top: calc(#{$defaultPadding} / 2);
-    right: calc(#{$defaultPadding} / 2);
-    @include mixins.icon(2rem, 'close');
+    top: calc(#{$defaultPadding} / 2.4 * 2.6);
+    right: calc(#{$defaultPadding} / 2.4 * 2.6);
+    @include mixins.icon(2.7rem, 'close');
     @include mixins.link(white, $hover);
   }
 

@@ -9,44 +9,58 @@ export type TItem = {
   price: number | null;
 }
 
-export interface IItemsList {
+export type TItemsAPI = {
   items: TItem[];
-  addItems(items: TItem[]): void;
-  getItem(id: TItemId): TItem;
+  total: number;
+}
+
+export type TItemView = TItem & {
+  priceString: string;
+  imageLink: string;
+  categoryClass: string;
+}
+
+export interface IItemsList {
+  setItems(items: TItem[]): void;
+  getAllItems(): TItemView[];
+  getItems(itemIds: TItemId[]): TItemView[];
+  getItem(id: TItemId): TItemView;
 }
 
 export interface IBasket {
-  itemIds: TItemId[];
-  total: number | null;
-  count: number;
   addItem(id: TItemId): void;
   removeItem(id: TItemId): void;
+  reset(): void;
   getItemIds(): TItemId[];
-  getTotal(): number | null;
+  getTotal(itemsList: IItemsList): number | null;
+  getTotalString(itemsList: IItemsList): string;
   getCount(): number;
+  checkItem(itemIdForCheck: TItemId): boolean;
 }
 
+export type TPaymentType = 'online' | 'cash';
+
 export type TOrder = {
-  payment: string;
+  payment: TPaymentType;
   address: string;
   email: string;
   phone: string;
 
-  itemIds: TItemId[];
+  items: TItemId[];
   total: number;
 }
 
-export interface IOrderData extends TOrder {
-  setOrderData(data: TOrder): void;
+export interface IOrderData {
+  setOrderData(data: Partial<TOrder>): void;
   getOrderData(): TOrder;
 }
 
 export type TOrderResult = {
-  result: boolean;
-  errorMessage: string;
+  id: string;
+  total: number;
 }
 
 export interface IWebLarekAPI {
-  getItems(): Promise<TItem[]>;
+  getItems(): Promise<TItemsAPI>;
   sendOrder(order: TOrder): Promise<TOrderResult>;
 }
