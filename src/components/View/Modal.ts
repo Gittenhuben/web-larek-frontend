@@ -23,6 +23,10 @@ export abstract class Modal {
     document.addEventListener('keydown', this.handleCloseModalByEscapeBinded);
     this.buttonClose.addEventListener('click', this.handleCloseModalByButtonBinded);
     this.modalRoot.addEventListener('mousedown', this.handleCloseModalByOverlayBinded);
+
+    this.container = this.templateModal.content.cloneNode(true) as HTMLElement;
+    this.buttonMain = this.container.querySelector('.button:not(.button_alt)');
+    this.buttonMain.setAttribute('type', 'button');
   }
 
   protected removeChildren(elem: HTMLElement): void {

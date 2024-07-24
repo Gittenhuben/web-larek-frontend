@@ -1,7 +1,7 @@
 import { TItemId, TItemView } from "../../types";
 
-export class ItemView {
 
+export class ItemView {
   protected container: HTMLElement;
   protected id: TItemId;
   protected category: HTMLElement;
@@ -23,7 +23,7 @@ export class ItemView {
 
     if (this.category) {
       this.category.textContent = item.category;
-      this.clearClassListCategories(this.category);
+      this.category.setAttribute('class', 'card__category');
       this.category.classList.add(item.categoryClass);
     }
     if (this.title) this.title.textContent = item.title;
@@ -31,14 +31,6 @@ export class ItemView {
     if (this.price) this.price.textContent = item.priceString;
     if (this.description) this.description.textContent = item.description;
     if (this.serialNumber) this.serialNumber.textContent = String(serialNumber);
-  }
-
-  protected clearClassListCategories(elem: HTMLElement): void {
-    elem.classList.remove('card__category_soft');
-    elem.classList.remove('card__category_additional');
-    elem.classList.remove('card__category_button');
-    elem.classList.remove('card__category_hard');
-    elem.classList.remove('card__category_other');
   }
 
   get(): HTMLElement {

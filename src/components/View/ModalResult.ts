@@ -2,7 +2,7 @@ import { Modal } from './Modal';
 import { IEvents } from "../base/events";
 
 
-export class ModalSuccess extends Modal {
+export class ModalResult extends Modal {
   protected result: HTMLElement;
   protected description: HTMLElement;
   protected imageContainer: HTMLElement;
@@ -10,17 +10,13 @@ export class ModalSuccess extends Modal {
   
   constructor(modalRoot: HTMLElement, templateModal: HTMLTemplateElement, events: IEvents) {
     super(modalRoot, templateModal, events);
-
-    this.container = this.templateModal.content.cloneNode(true) as HTMLElement;
+    
     this.result = this.container.querySelector('.order-success__title');
     this.description = this.container.querySelector('.order-success__description');
-    this.buttonMain = this.container.querySelector('.button');
     this.imageContainer = this.container.querySelector('.order-success');
 
-    this.buttonMain.setAttribute('type', 'button');
-
     this.buttonMain.addEventListener('click', () => {
-      this.events.emit('success:submit', {errorMode: this.errorMode});
+      this.events.emit('result:submit', {errorMode: this.errorMode});
     })
   }
 

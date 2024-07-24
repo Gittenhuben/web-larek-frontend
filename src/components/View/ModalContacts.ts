@@ -17,12 +17,9 @@ export class ModalContacts extends Modal {
   constructor(modalRoot: HTMLElement, templateModal: HTMLTemplateElement, events: IEvents) {
     super(modalRoot, templateModal, events);
 
-    this.container = this.templateModal.content.cloneNode(true) as HTMLElement;
     this.emailElement = this.container.querySelector('input[name="email"]');
     this.phoneElement = this.container.querySelector('input[name="phone"]');
     this.errors = this.container.querySelector('.form__errors');
-    this.buttonMain = this.container.querySelector('.button');
-    this.buttonMain.setAttribute('type', 'button');
 
     this.updateEmailState();
     this.updatePhoneState();

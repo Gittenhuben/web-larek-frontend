@@ -20,14 +20,11 @@ export class ModalOrder extends Modal {
   constructor(modalRoot: HTMLElement, templateModal: HTMLTemplateElement, events: IEvents) {
     super(modalRoot, templateModal, events);
 
-    this.container = this.templateModal.content.cloneNode(true) as HTMLElement;
     this.addressElement = this.container.querySelector('input[name="address"]');
     this.buttonPaymentCard = this.container.querySelector('button[name="card"]');
     this.buttonPaymentCash = this.container.querySelector('button[name="cash"]');
     this.buttonsPayment = this.container.querySelector('.order__buttons');
     this.errors = this.container.querySelector('.form__errors');
-    this.buttonMain = this.container.querySelector('.order__button');
-    this.buttonMain.setAttribute('type', 'button');
 
     this.updatePaymentButtonsState();
     this.updateAddressState();

@@ -13,13 +13,9 @@ export class ModalBasket extends Modal {
   constructor(modalRoot: HTMLElement, templateModal: HTMLTemplateElement, events: IEvents) {
     super(modalRoot, templateModal, events);
 
-    this.container = this.templateModal.content.cloneNode(true) as HTMLElement;
     this.templateItemRoot = this.container.querySelector('.basket__list');
     this.total = this.container.querySelector('.basket__price');
     this.title = this.container.querySelector('.modal__title');
-    this.buttonMain = this.container.querySelector('.button');
-
-    this.buttonMain.setAttribute('type', 'button');
 
     this.buttonMain.addEventListener('click', () => {
       this.events.emit('basket:submit');

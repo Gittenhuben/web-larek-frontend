@@ -2,6 +2,7 @@ import { TItemId, TItem, TItemView, IItemsList } from "../../types";
 import { CDN_URL, CDN_IMAGES_FORMAT } from '../../utils/constants';
 import { getPriceString } from '../../utils/utils';
 
+
 export class ItemsList implements IItemsList {
   protected items: TItemView[] = [];
 

@@ -2,6 +2,7 @@ import { TItemId, IItemsList, IBasket } from "../../types";
 import { IEvents } from "../base/events";
 import { getPriceString } from '../../utils/utils';
 
+
 export class Basket implements IBasket {
   protected itemIds: TItemId[] = [];
   protected total: number | null = 0;

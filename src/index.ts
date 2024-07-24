@@ -9,7 +9,7 @@ import { ModalCardPreview } from './components/View/ModalCardPreview';
 import { ModalBasket } from './components/View/ModalBasket';
 import { ModalOrder } from './components/View/ModalOrder';
 import { ModalContacts } from './components/View/ModalContacts';
-import { ModalSuccess } from './components/View/ModalSuccess';
+import { ModalResult } from './components/View/ModalResult';
 import { HeaderBasketView } from './components/View/HeaderBasketView';
 import { Basket } from './components/Model/Basket';
 import { OrderData } from './components/Model/OrderData';
@@ -41,7 +41,7 @@ const modalCardPreview = new ModalCardPreview(modalRoot, modalTemplateCardPrevie
 const modalBasket = new ModalBasket(modalRoot, modalTemplateBasket, events);
 const modalOrder = new ModalOrder(modalRoot, modalTemplateOrder, events);
 const modalContacts = new ModalContacts(modalRoot, modalTemplateContacts, events);
-const modalSuccess = new ModalSuccess(modalRoot, modalTemplateSuccess, events);
+const modalResult = new ModalResult(modalRoot, modalTemplateSuccess, events);
 
 
 function getItemElements(template: HTMLTemplateElement, items: TItemView[]): TItemElement[] {
@@ -60,7 +60,7 @@ events.on('itemList:change', () => {
 })
 
 events.on('gallery:click', (data: {id: TItemId}) => {
-  modalCardPreview.setItem(getItemElements(modalTemplateCardPreview, [itemsList.getItem(data.id)])[0], basket.checkItem(data.id));
+  modalCardPreview.setItem(itemsList.getItem(data.id), basket.checkItem(data.id));
   modalCardPreview.show();
 })
 
@@ -109,8 +109,8 @@ events.on('contacts:submit', (data: {email: string, phone: string}) => {
 
 events.on('orderSend:success', (data: {total: number}) => {
   setTimeout(() => {
-    modalSuccess.set('Заказ оформлен', 'Списано ' + getPriceString(data.total));
-    modalSuccess.show();
+    modalResult.set('Заказ оформлен', 'Списано ' + getPriceString(data.total));
+    modalResult.show();
   }, MODAL_DELAY);
 
   basket.reset();
@@ -119,13 +119,13 @@ events.on('orderSend:success', (data: {total: number}) => {
 
 events.on('orderSend:error', (data: {error: string}) => {
   setTimeout(() => {
-    modalSuccess.set('Ошибка', data.error, true);
-    modalSuccess.show();
+    modalResult.set('Ошибка', data.error, true);
+    modalResult.show();
   }, MODAL_DELAY);
 })
 
-events.on('success:submit', (data: {errorMode: boolean}) => {
-  modalSuccess.hide();
+events.on('result:submit', (data: {errorMode: boolean}) => {
+  modalResult.hide();
   if(data.errorMode) sendOrder();
 })
 

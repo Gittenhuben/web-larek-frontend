@@ -1,6 +1,7 @@
 import { TItemElement } from "../../types";
 import { IEvents } from "../base/events";
 
+
 export class GalleryView {
   protected container: DocumentFragment;
   protected parent: HTMLElement;
