@@ -1,15 +1,13 @@
 import { Modal } from './Modal';
-import { TItemView } from "../../types";
-import { ItemView } from './ItemView';
+import { TItemElement } from "../../types";
 
 
 export class ModalCardPreview extends Modal {
-  protected item: TItemView;
+  protected item: TItemElement;
 
-  setItem(item: TItemView, inBasket: boolean): void {
+  setItem(item: TItemElement, inBasket: boolean): void {
     this.item = item;
-    const itemView = new ItemView(this.templateModal, item);
-    this.container = itemView.get();
+    this.container = this.item.element;
 
     this.buttonMain = this.container.querySelector('.card__button');
     this.buttonMain.setAttribute('type', 'button');

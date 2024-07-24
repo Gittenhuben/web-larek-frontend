@@ -1,4 +1,5 @@
 import { Modal } from './Modal';
+import { IEvents } from "../base/events";
 
 
 export class ModalContacts extends Modal {
@@ -13,21 +14,14 @@ export class ModalContacts extends Modal {
   protected validPhone: boolean = false;
   protected validationActive: boolean = false;
 
-  init(): void {
+  constructor(modalRoot: HTMLElement, templateModal: HTMLTemplateElement, events: IEvents) {
+    super(modalRoot, templateModal, events);
+
     this.container = this.templateModal.content.cloneNode(true) as HTMLElement;
     this.emailElement = this.container.querySelector('input[name="email"]');
     this.phoneElement = this.container.querySelector('input[name="phone"]');
     this.errors = this.container.querySelector('.form__errors');
     this.buttonMain = this.container.querySelector('.button');
-
-    this.emailElement.value = this.email;
-    this.phoneElement.value = this.phone;
-
-    if (this.validationActive) {
-      this.emailElement.required = true;
-      this.phoneElement.required = true;
-    }  
-
     this.buttonMain.setAttribute('type', 'button');
 
     this.updateEmailState();
@@ -56,10 +50,9 @@ export class ModalContacts extends Modal {
       this.updateErrorText();
       this.updateMainButtonStatus();
       if (this.validEmail && this.validPhone) {
-        this.events.emit('contacts:button', {email: this.email, phone: this.phone});
+        this.events.emit('contacts:submit', {email: this.email, phone: this.phone});
       }
     });
-
   }
 
   protected activateValidation(): void {
@@ -88,5 +81,4 @@ export class ModalContacts extends Modal {
   protected updateMainButtonStatus(): void {
     this.buttonMain.disabled = !(this.validEmail && this.validPhone) && this.validationActive; 
   }
-
 }

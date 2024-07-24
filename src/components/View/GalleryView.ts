@@ -1,28 +1,23 @@
-import { TItemView } from "../../types";
-import { ItemView } from './ItemView';
+import { TItemElement } from "../../types";
 import { IEvents } from "../base/events";
 
 export class GalleryView {
   protected container: DocumentFragment;
   protected parent: HTMLElement;
-  protected template: HTMLTemplateElement;
   protected events: IEvents;
 
-  constructor(parent: HTMLElement, template: HTMLTemplateElement, events: IEvents) {
+  constructor(parent: HTMLElement, events: IEvents) {
     this.container = document.createDocumentFragment();
     this.parent = parent;
-    this.template = template;
     this.events = events;
   }
 
-  setItems(items: TItemView[]): void {
+  setItems(items: TItemElement[]): void {
     items.forEach(item => {
-      const itemView = new ItemView(this.template, item);
-      const itemViewButton = itemView.get();
-      itemViewButton.firstElementChild.addEventListener('click', () => {
+      item.element.firstElementChild.addEventListener('click', () => {
         this.events.emit('gallery:click', {id: item.id});
       });
-      this.container.append(itemViewButton);
+      this.container.append(item.element);
     });
   }
 

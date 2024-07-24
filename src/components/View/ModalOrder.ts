@@ -1,5 +1,6 @@
 import { Modal } from './Modal';
 import { TPaymentType } from "../../types";
+import { IEvents } from "../base/events";
 
 
 export class ModalOrder extends Modal {
@@ -15,8 +16,10 @@ export class ModalOrder extends Modal {
   protected validAddress: boolean = false;
   protected validPayment: boolean = false;
   protected validationActive: boolean = false;
-  
-  init(): void {
+
+  constructor(modalRoot: HTMLElement, templateModal: HTMLTemplateElement, events: IEvents) {
+    super(modalRoot, templateModal, events);
+
     this.container = this.templateModal.content.cloneNode(true) as HTMLElement;
     this.addressElement = this.container.querySelector('input[name="address"]');
     this.buttonPaymentCard = this.container.querySelector('button[name="card"]');
@@ -24,9 +27,6 @@ export class ModalOrder extends Modal {
     this.buttonsPayment = this.container.querySelector('.order__buttons');
     this.errors = this.container.querySelector('.form__errors');
     this.buttonMain = this.container.querySelector('.order__button');
-
-    this.addressElement.value = this.address;
-    if (this.validationActive) this.addressElement.required = true;
     this.buttonMain.setAttribute('type', 'button');
 
     this.updatePaymentButtonsState();
@@ -62,7 +62,7 @@ export class ModalOrder extends Modal {
       this.updateErrorText();
       this.updateMainButtonStatus();
       if (this.validPayment && this.validAddress) {
-        this.events.emit('order:button', {payment: this.payment, address: this.address});
+        this.events.emit('order:submit', {payment: this.payment, address: this.address});
       }
     })
   }

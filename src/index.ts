@@ -1,8 +1,9 @@
 import './scss/styles.scss';
 import { WebLarekAPI } from './components/WebLarekAPI';
-import { TItemId, TPaymentType } from "./types";
+import { TItemId, TPaymentType, TItemView, TItemElement } from "./types";
 import { API_URL, MODAL_DELAY } from './utils/constants';
 import { GalleryView } from './components/View/GalleryView';
+import { ItemView } from './components/View/ItemView';
 import { ItemsList } from './components/Model/ItemsList';
 import { ModalCardPreview } from './components/View/ModalCardPreview';
 import { ModalBasket } from './components/View/ModalBasket';
@@ -31,25 +32,35 @@ const modalTemplateSuccess: HTMLTemplateElement = document.querySelector('#succe
 const events = new EventEmitter;
 const api = new WebLarekAPI(API_URL);
 const itemsList = new ItemsList;
-const galleryView = new GalleryView(galleryRoot, cardCatalogTemplate, events);
+const galleryView = new GalleryView(galleryRoot, events);
 const headerBasketView = new HeaderBasketView(headerBasketElement, events);
 const basket = new Basket(events);
 const orderData = new OrderData();
 
 const modalCardPreview = new ModalCardPreview(modalRoot, modalTemplateCardPreview, events);
-const modalBasket = new ModalBasket(modalRoot, modalTemplateBasket, cardBasketTemplate, events);
+const modalBasket = new ModalBasket(modalRoot, modalTemplateBasket, events);
 const modalOrder = new ModalOrder(modalRoot, modalTemplateOrder, events);
 const modalContacts = new ModalContacts(modalRoot, modalTemplateContacts, events);
 const modalSuccess = new ModalSuccess(modalRoot, modalTemplateSuccess, events);
 
 
+function getItemElements(template: HTMLTemplateElement, items: TItemView[]): TItemElement[] {
+  const elementsArray: TItemElement[] = [];
+  let i = 1;
+  for (const item of items) {
+    const itemView = new ItemView(template, item, i++);
+    elementsArray.push({id: item.id, element: itemView.get()})
+  }
+  return elementsArray;
+}
+
 events.on('itemList:change', () => {
-  galleryView.setItems(itemsList.getAllItems());
+  galleryView.setItems(getItemElements(cardCatalogTemplate,itemsList.getAllItems()));
   galleryView.render();
 })
 
 events.on('gallery:click', (data: {id: TItemId}) => {
-  modalCardPreview.setItem(itemsList.getItem(data.id), basket.checkItem(data.id));
+  modalCardPreview.setItem(getItemElements(modalTemplateCardPreview, [itemsList.getItem(data.id)])[0], basket.checkItem(data.id));
   modalCardPreview.show();
 })
 
@@ -60,55 +71,40 @@ events.on('preview:addToBasket', (data: {id: TItemId}) => {
 
 events.on('basket:change', () => {
   headerBasketView.counter = basket.getCount();
-})
-
-events.on('headerBasket:click', () => {
-  modalBasket.setItems(itemsList.getItems(basket.getItemIds()),
+  modalBasket.setItems(getItemElements(cardBasketTemplate, itemsList.getItems(basket.getItemIds())),
                        basket.getTotalString(itemsList),
                        basket.getCount() > 0 && basket.getTotal(itemsList) !== null
                       );
+})
+
+events.on('headerBasket:click', () => {
   modalBasket.show();
 })
 
 events.on('basket:deleteItem', (data: {id: TItemId}) => {
   basket.removeItem(data.id);
-  modalBasket.setItems(itemsList.getItems(basket.getItemIds()),
-                       basket.getTotalString(itemsList),
-                       basket.getCount() > 0 && basket.getTotal(itemsList) !== null
-                      );
-  modalBasket.show();
 })
 
-events.on('basket:order', () => {
+events.on('basket:submit', () => {
   modalBasket.hide();
   orderData.setOrderData({items: basket.getItemIds(), total: basket.getTotal(itemsList)});
   setTimeout(() => {
-    modalOrder.init();
     modalOrder.show();
   }, MODAL_DELAY);
 })
 
-events.on('order:button', (data: {payment: TPaymentType, address: string}) => {
+events.on('order:submit', (data: {payment: TPaymentType, address: string}) => {
   modalOrder.hide();
   orderData.setOrderData({payment: data.payment, address: data.address});
   setTimeout(() => {
-    modalContacts.init();
     modalContacts.show();
   }, MODAL_DELAY);
 })
 
-events.on('contacts:button', (data: {email: string, phone: string}) => {
+events.on('contacts:submit', (data: {email: string, phone: string}) => {
   modalContacts.hide();
   orderData.setOrderData({email: data.email, phone: data.phone});
-
-  api.sendOrder(orderData.getOrderData())
-    .then(res => {
-      events.emit('orderSend:success', {total: res.total});
-    })
-    .catch(err => {
-      console.log("Ошибка: " + err);
-      events.emit('orderSend:error', {error: err});
-    })
+  sendOrder();
 })
 
 events.on('orderSend:success', (data: {total: number}) => {
@@ -128,10 +124,21 @@ events.on('orderSend:error', (data: {error: string}) => {
   }, MODAL_DELAY);
 })
 
-events.on('success:button', () => {
+events.on('success:submit', (data: {errorMode: boolean}) => {
   modalSuccess.hide();
+  if(data.errorMode) sendOrder();
 })
 
+function sendOrder(): void {
+  api.sendOrder(orderData.getOrderData())
+    .then(res => {
+      events.emit('orderSend:success', {total: res.total});
+    })
+    .catch(err => {
+      console.log("Ошибка: " + err);
+      events.emit('orderSend:error', {error: err});
+    })
+}
 
 api.getItems()
   .then(res => {

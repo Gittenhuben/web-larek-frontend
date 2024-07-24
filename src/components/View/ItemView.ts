@@ -3,9 +3,7 @@ import { TItemId, TItemView } from "../../types";
 export class ItemView {
 
   protected container: HTMLElement;
-
   protected id: TItemId;
-
   protected category: HTMLElement;
   protected title: HTMLElement;
   protected image: HTMLImageElement;
@@ -15,9 +13,7 @@ export class ItemView {
 
   constructor (template: HTMLTemplateElement, item: TItemView, serialNumber: number = 0) {
     this.container = template.content.cloneNode(true) as HTMLElement;
-
     this.id = item.id;
-
     this.category = this.container.querySelector('.card__category');
     this.title = this.container.querySelector('.card__title');
     this.image = this.container.querySelector('.card__image');

@@ -27,6 +27,11 @@ export interface IItemsList {
   getItem(id: TItemId): TItemView;
 }
 
+export type TItemElement = {
+  id: TItemId;
+  element: HTMLElement;
+}
+
 export interface IBasket {
   addItem(id: TItemId): void;
   removeItem(id: TItemId): void;

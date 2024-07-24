@@ -1,4 +1,5 @@
 import { IEvents } from "../base/events";
+import { MODAL_DELAY } from '../../utils/constants';
 
 
 export abstract class Modal {
@@ -9,6 +10,7 @@ export abstract class Modal {
   protected buttonClose: HTMLButtonElement;
   protected events: IEvents;
   protected buttonMain: HTMLButtonElement;
+  protected showed: boolean = false;
 
   constructor(modalRoot: HTMLElement, templateModal: HTMLTemplateElement, events: IEvents) {
     this.container = templateModal.content.cloneNode(true) as HTMLElement;
@@ -18,32 +20,50 @@ export abstract class Modal {
     this.buttonClose = this.modalRoot.querySelector('.modal__close');
     this.events = events;
 
-    this.buttonClose.addEventListener('click', () => this.hide());
-    this.modalRoot.addEventListener('mousedown', (evt: MouseEvent) => {
-      if ((<HTMLElement>evt.target).classList.contains('modal_active')) this.hide();
-    });
+    document.addEventListener('keydown', this.handleCloseModalByEscapeBinded);
+    this.buttonClose.addEventListener('click', this.handleCloseModalByButtonBinded);
+    this.modalRoot.addEventListener('mousedown', this.handleCloseModalByOverlayBinded);
   }
 
   protected removeChildren(elem: HTMLElement): void {
     while (elem.firstChild) elem.lastChild.remove();
   }
 
+  protected moveChildren(source: HTMLElement, destination: HTMLElement): void {
+    while (source.firstChild) {
+      destination.appendChild(source.lastChild);
+    }
+  }
+
   show(): void {
+    this.showed = true;
     this.removeChildren(this.templateRoot);
     this.templateRoot.append(this.container);
     this.modalRoot.classList.add('modal_active');
-    document.addEventListener('keydown', this.handleCloseModalByEscapeBinded);
   }
 
   hide(): void {
-    document.removeEventListener('keydown', this.handleCloseModalByEscapeBinded);
-    this.modalRoot.classList.remove('modal_active');
+    if (this.showed) {
+      this.modalRoot.classList.remove('modal_active');
+      this.showed = false;
+      setTimeout(() => {
+        this.moveChildren(this.templateRoot, this.container);
+      }, MODAL_DELAY);
+    }
   }
 
   handleCloseModalByEscape(evt: KeyboardEvent): void {
-    if (evt.key === 'Escape') {
-      this.hide();
-    }
+    if (evt.key === 'Escape') this.hide();
   }
   handleCloseModalByEscapeBinded = this.handleCloseModalByEscape.bind(this);
+
+  handleCloseModalByButton(): void {
+    this.hide();
+  }
+  handleCloseModalByButtonBinded = this.handleCloseModalByButton.bind(this);
+
+  handleCloseModalByOverlay(evt: MouseEvent): void {
+    if ((<HTMLElement>evt.target).classList.contains('modal_active')) this.hide();
+  }
+  handleCloseModalByOverlayBinded = this.handleCloseModalByOverlay.bind(this);
 }

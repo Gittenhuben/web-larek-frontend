@@ -1,42 +1,48 @@
 import { Modal } from './Modal';
-import { TItemView } from "../../types";
-import { ItemView } from './ItemView';
+import { TItemElement, TItemView } from "../../types";
 import { IEvents } from "../base/events";
+import { getPriceString } from '../../utils/utils';
 
 
 export class ModalBasket extends Modal {
   protected items: TItemView[];
   protected templateItemRoot: HTMLElement;
-  protected templateItem: HTMLTemplateElement;
   protected total: HTMLElement;
   protected title: HTMLElement;
 
-  constructor(modalRoot: HTMLElement, templateModal: HTMLTemplateElement, templateItem: HTMLTemplateElement, events: IEvents) {
+  constructor(modalRoot: HTMLElement, templateModal: HTMLTemplateElement, events: IEvents) {
     super(modalRoot, templateModal, events);
-    this.templateItem = templateItem;
-  }
 
-  setItems(items: TItemView[], total: string, buttonEnabled: boolean): void {
     this.container = this.templateModal.content.cloneNode(true) as HTMLElement;
     this.templateItemRoot = this.container.querySelector('.basket__list');
     this.total = this.container.querySelector('.basket__price');
     this.title = this.container.querySelector('.modal__title');
     this.buttonMain = this.container.querySelector('.button');
 
-    this.removeChildren(this.templateItemRoot);
     this.buttonMain.setAttribute('type', 'button');
-    
+
+    this.buttonMain.addEventListener('click', () => {
+      this.events.emit('basket:submit');
+    });
+
+    this.title.textContent = 'Корзина пустая';
+    this.buttonMain.disabled = true;
+    this.total.textContent = getPriceString(0);
+  }
+
+  setItems(items: TItemElement[], total: string, buttonEnabled: boolean): void {
+    this.removeChildren(this.templateItemRoot);
+
     if (items.length > 0) {
       let i=1;
       for (const item of items) {
-        const itemView = new ItemView(this.templateItem, item, i++);
-        const itemViewElement = itemView.get();
-        const buttonDelete = itemViewElement.querySelector('.basket__item-delete');
+        const buttonDelete = item.element.querySelector('.basket__item-delete');
         buttonDelete.addEventListener('click', () => {
           this.events.emit('basket:deleteItem', {id: item.id});
         });  
-        this.templateItemRoot.append(itemViewElement);
+        this.templateItemRoot.append(item.element);
       }
+      this.title.textContent = 'Корзина';
     } else {
       this.title.textContent = 'Корзина пустая';
     }
@@ -47,9 +53,6 @@ export class ModalBasket extends Modal {
       this.buttonMain.disabled = true;
     } else {
       this.buttonMain.disabled = false;
-      this.buttonMain.addEventListener('click', () => {
-        this.events.emit('basket:order');
-      });
     }
   }
 }
